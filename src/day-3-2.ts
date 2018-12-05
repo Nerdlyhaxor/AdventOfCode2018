@@ -55,6 +55,22 @@ function processClaim(fabric: Array < Array < string > > , claim: Claim): Array 
     return result;
 }
 
+function checkClaim(fabric: Array < Array < string > > , claim: Claim): boolean {
+
+    let maxX: number = claim.XCoord + claim.XLength;
+    let maxY: number = claim.YCoord + claim.YLength;
+
+    for (let y: number = claim.YCoord; y < maxY; y++) {
+        for (let x: number = claim.XCoord; x < maxX; x++) {
+            if (fabric[y][x] === "X") {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 function displayFabric(fabric: Array < Array < string > > ): void {
     for (var row: number = 0; row < fabric.length; row++) {
         console.log(fabric[row].join(""));
@@ -71,30 +87,20 @@ fs.readFile(inputFileName, "utf8", (err, contents) => {
 
     let fabric: Array < Array < string > > = initFabric(1000, 1000);
 
-    contents.split("\r\n")
-        .map(line => new Claim(line))
+    let claims: Array < Claim > = contents.split("\r\n")
+        .map(line => new Claim(line));
+
+    claims
         .forEach(claim => {
             fabric = processClaim(fabric, claim);
         });
 
-    let numberOfConflicts: number = 0;
+    let filteredClaims: Array < Claim > = claims
+        .filter(claim => checkClaim(fabric, claim));
 
-    fabric
-        .forEach(line => {
-            line
-                .forEach(cell => {
-                    if (cell === "X") {
-                        numberOfConflicts++;
-                    }
-                });
-        });
-
-    console.log(numberOfConflicts);
+    if (filteredClaims.length === 1) {
+        console.log(filteredClaims[0].ClaimNumber);
+    } else {
+        console.log("WHAT HAPPENED!!!!!?!!!!?!?");
+    }
 });
-
-console.log("");
-console.log("");
-
-// let numberOfInches: number = 0;
-
-// console.log(numberOfInches);
