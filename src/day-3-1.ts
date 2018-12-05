@@ -21,7 +21,7 @@ class Claim {
     }
 }
 
-function initFabricForDisplay(xLength: number, yLength: number): Array < Array < string > > {
+function initFabric(xLength: number, yLength: number): Array < Array < string > > {
     let fabric: Array < Array < string > > = [];
 
     for (var xIndex: number = 0; xIndex < xLength; xIndex++) {
@@ -39,25 +39,34 @@ function initFabricForDisplay(xLength: number, yLength: number): Array < Array <
 function processClaim(fabric: Array < Array < string > > , claim: Claim): Array < Array < string > > {
     let result: Array < Array < string > > = fabric;
 
-    let xLength: number = (claim.XLength + claim.XCoord);
-    let yLength: number = (claim.YLength + claim.YCoord);
+    let maxX: number = claim.XCoord + claim.XLength;
+    let maxY: number = claim.YCoord + claim.YLength;
 
-    for (let x: number = claim.XCoord; x < xLength; x++) {
-        for (let y: number = claim.YCoord; y < yLength; y++) {
-            if (result[y][x] === ".") {
-                result[y][x] = "C";
+    for (let yPoint: number = claim.YCoord; yPoint < maxY; yPoint++) {
+        for (let xPoint: number = claim.YCoord; xPoint < maxX; xPoint++) {
+            if (result[yPoint][xPoint] === ".") {
+                result[yPoint][xPoint] = "C";
             } else {
-                result[y][x] = "X";
+                result[yPoint][xPoint] = "X";
             }
         }
     }
 
+    displayFabric(result);
+
     return result;
 }
 
-let inputFileName: string = "./input/input-3-1.txt";
+function displayFabric(fabric: Array < Array < string > > ): void {
+    for (var row: number = 0; row < fabric.length; row++) {
+        console.log(fabric[row].join(""));
+    }
+}
 
-let fabric: Array < Array < string > > = initFabricForDisplay(1000, 1000);
+// let inputFileName: string = "./input/input-3-1.txt";
+let inputFileName: string = "./testData/testData-3-1.txt";
+
+let fabric: Array < Array < string > > = initFabric(10, 10);
 
 fs.readFile(inputFileName, "utf8", (err, contents) => {
     if (err) {
@@ -66,12 +75,15 @@ fs.readFile(inputFileName, "utf8", (err, contents) => {
 
     let claims: Array < Claim > = contents.split("\r\n")
         .map(line => new Claim(line));
+
+    for (var i: number = 0; i < claims.length; i++) {
+        fabric = processClaim(fabric, claims[i]);
+    }
 });
 
-let numberOfInches: number = 0;
+displayFabric(fabric);
+console.log("");
 
-console.log(fabric
-    .filter(line => line.indexOf("X") > -1)
-    .length);
+// let numberOfInches: number = 0;
 
-console.log(numberOfInches);
+// console.log(numberOfInches);

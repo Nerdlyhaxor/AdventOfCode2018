@@ -1,6 +1,7 @@
 import fs = require("fs");
 
-let inputFileName: string = "./input/test-2-2.txt";
+let inputFileName: string = "./input/input-2-2.txt";
+
 
 function onlyOneCharacterDifference(stringOne: string, stringTwo: string): boolean {
     let numberOfDifferences: number = 0;
@@ -15,6 +16,18 @@ function onlyOneCharacterDifference(stringOne: string, stringTwo: string): boole
     }
 
     return numberOfDifferences === 1;
+}
+
+function getSameCharacters(stringOne: string, stringTwo: string): string {
+    let result: Array < string > = [];
+
+    for (var index: number = 0; index < stringOne.length && index < stringTwo.length; index++) {
+        if (stringOne[index] === stringTwo[index]) {
+            result.push(stringOne[index]);
+        }
+    }
+
+    return result.join("");
 }
 
 fs.readFile(inputFileName, "utf8", (err, contents) => {
@@ -41,21 +54,5 @@ fs.readFile(inputFileName, "utf8", (err, contents) => {
         }
     }
 
-    console.log(originalLine);
-    console.log(otherLine);
-
-    // lines
-    //     .forEach(line => {
-    //         console.log("Original Line: " + line);
-    //         console.log("");
-
-    //         let differentLine: Array < string > = lines.filter(otherLines => {
-    //             return !(line === otherLines);
-    //         }).filter(otherLine => {
-    //             return onlyOneCharacterDifference(line, otherLine);
-    //         });
-
-    //         differentLine
-    //             .forEach(o => console.log(o));
-    //     });
+    console.log(getSameCharacters(originalLine, otherLine));
 });
